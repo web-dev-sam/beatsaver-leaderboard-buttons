@@ -9,7 +9,7 @@
 
 
 # ScoreSaber Beatsaver Buttons
-Chrome extension that adds the one-click install, twitch !bsr, beatsaver link and download buttons to the ScoreSaber leaderboards.
+Chrome extension that adds a one-click install, twitch !bsr, BeatSaver/Beatleader link, and download button to the ScoreSaber leaderboards.
 
 
 # How to install

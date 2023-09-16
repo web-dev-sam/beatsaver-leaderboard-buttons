@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "ScoreSaber Buttons",
-  "description": "Adds the one-click install, twitch !bsr, beatsaver link and download buttons to the ScoreSaber leaderboards.",
-  "version": "0.0.1",
+  "description": "Adds the one-click install, twitch !bsr, BeatSaver/Beatleader link, and download buttons to the ScoreSaber leaderboards.",
+  "version": "0.0.3",
   "permissions": [],
   "icons": {
     "16": "icons/16.png",

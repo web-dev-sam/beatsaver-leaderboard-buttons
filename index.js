@@ -24,41 +24,52 @@ async function load() {
     // Get leaderboard id from url
     const leaderboardId = window.location.pathname.split('/').pop();
     if (leaderboardId == null) {
+        log(`Failed to get leaderboard ID from URL ${window.location.pathname}`);
         return;
     }
 
     // Get leaderboardInfos from scoresaber leaderboard api
     const leaderboardInfos = await fetchLeaderboardInfos(leaderboardId);
     if (leaderboardInfos == null) {
+        log(`Failed to get leaderboard information from URL ${SCORESABER_LEADERBOARD_API.replace('{0}', leaderboardId)}`);
         return;
     }
 
     // Get the songHash from the leaderboardInfos
-    const songHash = leaderboardInfos.songHash;
+    const songHash = leaderboardInfos.songHash?.toLowerCase();
     if (!songHash) {
+        log(`Couldn't find song hash in leaderboard information:`, leaderboardInfos);
         return;
     }
-    const beatsaverURL = BEATSAVER_API.replace('{0}', songHash);
-    const downloadURL = `https://eu.cdn.beatsaver.com/${songHash.toLowerCase()}.zip`;
 
     // Get the beatmap from beatsaver api
-    const beatmap = await fetchBeatmap(beatsaverURL);
+    const beatsaverURL = BEATSAVER_API.replace('{0}', songHash);
+    const beatleaderUIDFetchURL = `https://beatsaver.com/api/scores/${songHash}/1?difficulty=${leaderboardInfos.difficulty.difficulty}&type=BeatLeader`; // "?difficulty=9&gameMode=0&type=BeatLeader"
+    const [{ value: beatleader }, { value: beatmap }] = await Promise.allSettled([
+        safeFetch(beatleaderUIDFetchURL),
+        safeFetch(beatsaverURL),
+    ]);
     if (beatmap == null) {
+        log(`Failed to get beatsaver data from URL:`, beatsaverURL);
         return;
     }
 
     const beatKey = beatmap.id;
     if (beatKey == null) {
+        log(`Failed to get map bsr code from beatsaver data:`, beatmap, beatsaverURL);
         return;
     }
 
     const quickInstallURL = QUICK_INSTALL_URL.replace('{0}', beatKey);
     const bsrCopy = `!bsr ${beatKey}`;
     const beatsaverPage = `https://beatsaver.com/maps/${beatKey}`;
+    const beatleaderLeaderboardURL = beatleader.uid ? `https://www.beatleader.xyz/leaderboard/global/${beatleader.uid}` : null;
+    const downloadURL = `https://eu.cdn.beatsaver.com/${songHash}.zip`;
 
     log(beatsaverURL);
     log(downloadURL);
     log(quickInstallURL);
+    log(beatleaderLeaderboardURL);
     log(bsrCopy);
 
     // Add buttons
@@ -81,6 +92,19 @@ async function load() {
         </svg>
         </div>`;
         const downloadButtonHTML = `<div class="download" title="Download Files"><i class="fas fa-download"></i></div>`;
+        const beatleaderLeaderboardHTML = `<div class="beatleader" title="Open BeatLeader Leaderboard"><svg width="269" height="254" viewBox="0 0 269 254" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <g clip-path="url(#clip0_761_37)">
+        <path d="M173.792 133.373C177.331 111.567 162.522 91.0201 140.716 87.481C118.91 83.942 98.3631 98.7506 94.824 120.557C91.285 142.363 106.094 162.91 127.9 166.449C149.706 169.988 170.253 155.179 173.792 133.373Z" fill="white"/>
+        <path d="M233.3 19.2C238.2 19.2 242.1 23.2 242.1 28V225.8C242.1 230.7 238.1 234.6 233.3 234.6H35.3999C30.4999 234.6 26.5999 230.6 26.5999 225.8V28C26.5999 23.1 30.5999 19.2 35.3999 19.2H233.3ZM233.3 0H35.3999C19.8999 0 7.3999 12.5 7.3999 28V225.9C7.3999 241.4 19.8999 253.9 35.3999 253.9H233.3C248.8 253.9 261.3 241.4 261.3 225.9V28C261.3 12.5 248.7 0 233.3 0Z" fill="white"/>
+        </g>
+        <defs>
+        <clipPath id="clip0_761_37">
+        <rect width="268.7" height="253.9" fill="white"/>
+        </clipPath>
+        </defs>
+        </svg>
+        </div>
+        `;
         buttonContainer.innerHTML = `
             <style>
                 .ssbtns-wrapper {
@@ -117,6 +141,7 @@ async function load() {
                 ${twitchButtonHTML}
                 ${quickInstallButtonHTML}
                 ${beatsaverButtonHTML}
+                ${beatleaderLeaderboardHTML}
                 ${downloadButtonHTML}
             </div>
         `;
@@ -126,6 +151,7 @@ async function load() {
         const quickInstallButton = buttonContainer.getElementsByClassName("quick")[0];
         const downloadButton = buttonContainer.getElementsByClassName("download")[0];
         const beatsaverButton = buttonContainer.getElementsByClassName("beatsaver")[0];
+        const beatleaderButton = buttonContainer.getElementsByClassName("beatleader")[0];
 
         twitchButton.addEventListener("click", () => {
             navigator.clipboard.writeText(bsrCopy);
@@ -141,6 +167,10 @@ async function load() {
 
         downloadButton.addEventListener("click", () => {
             window.open(downloadURL);
+        });
+
+        beatleaderButton.addEventListener("click", () => {
+            window.open(beatleaderLeaderboardURL);
         });
 
         return true;

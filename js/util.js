@@ -43,7 +43,7 @@ function fetchLeaderboardInfos(leaderboardId) {
  * Fetches the beatmap from beatsaver.
  * @returns {Promise<Object|null>} The beatmap or null if fetching didn't succeed.
  */
-function fetchBeatmap(beatsaverURL) {
+function safeFetch(beatsaverURL) {
     return new Promise(resolve => {
         fetch(beatsaverURL).then(response => response.json()).then(data => {
             if (data == null) {
