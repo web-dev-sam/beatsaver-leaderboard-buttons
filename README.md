@@ -10,7 +10,7 @@ _Chrome extension that adds a one-click install, twitch !bsr, BeatSaver/Beatlead
 &nbsp;
 
 ## Why does this exist?
-1. Grabbing a map from a ScoreSaber leaderboard should be one click, not a detour through BeatSaver.
+Grabbing a map from a ScoreSaber leaderboard should be one click, not a detour through BeatSaver.
 
 ## How it looks
 

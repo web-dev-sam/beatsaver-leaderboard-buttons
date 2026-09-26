@@ -1,13 +1,16 @@
 {
   "title": "ScoreSaber Beatsaver Buttons",
   "tagline": "Chrome extension that adds a one-click install, twitch !bsr, BeatSaver/Beatleader link, and download button to the ScoreSaber leaderboards. 🎮",
-  "why": [
-    "Grabbing a map from a ScoreSaber leaderboard should be one click, not a detour through BeatSaver."
-  ],
+  "why": "Grabbing a map from a ScoreSaber leaderboard should be one click, not a detour through BeatSaver.",
   "sections": [
     {
       "title": "How it looks",
-      "images": [{ "src": "https://raw.githubusercontent.com/MindLaborDev/beatsaver-leaderboard-buttons/main/demo.png", "width": 600 }]
+      "images": [
+        {
+          "src": "https://raw.githubusercontent.com/MindLaborDev/beatsaver-leaderboard-buttons/main/demo.png",
+          "width": 600
+        }
+      ]
     },
     {
       "title": "How to install it",
